@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Dropmylink - Premium Airdrop Tracker"
+version = "1.0.0"
+id = "artifacts/dropmylink"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24929
+
+[services.development]
+run = "pnpm --filter @workspace/dropmylink run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dropmylink", "run", "build" ]
+publicDir = "artifacts/dropmylink/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24929"
+BASE_PATH = "/"

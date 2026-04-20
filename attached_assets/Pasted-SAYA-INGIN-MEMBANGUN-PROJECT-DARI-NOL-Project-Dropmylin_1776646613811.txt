@@ -1,0 +1,40 @@
+SAYA INGIN MEMBANGUN PROJECT DARI NOL.
+Project: Dropmylink.xyz (Premium Airdrop Tracker)
+Stack: React + Tailwind CSS + lucide-react (untuk ikon)
+
+Tolong buatkan HANYA file `src/App.jsx` dengan desain "Ultra-Premium Web3 Dashboard". Jangan gunakan CSS eksternal, gunakan murni Tailwind utility classes inline.
+
+Spesifikasi Desain & Fitur:
+
+1. TEMA GLOBAL (OLED BLACK & SUBTLE GLASSMORPHISM):
+   - Background utama HANYA gunakan `bg-black` (bukan abu-abu gelap).
+   - Berikan efek Mesh Gradient tersembunyi di background menggunakan div fixed dengan `blur-[120px]` warna biru/ungu yang sangat tipis (opacity 10%).
+   - Hindari border tebal. Gunakan teknik subtle border seperti `ring-1 ring-white/10` dan background kartu transparan `bg-white/[0.02]`.
+
+2. HEADER & SEARCH:
+   - Header minimalis: Ikon Sparkles, Teks "DROP MYLINK" (MYLINK warna abu-abu), dan tombol Notifikasi (Bell) dengan titik indikator biru.
+   - Search bar bergaya pill/rounded-2xl dengan ikon kaca pembesar di dalam input.
+
+3. SMART FILTER DRAWER (SISTEM LACI - SANGAT PENTING):
+   - Jangan gunakan dropdown bawaan browser.
+   - Buat tombol "Filter" elegan. Jika diklik, akan membuka sebuah laci (drawer) ke bawah menggunakan animasi `max-h` dan `transition-all` yang smooth.
+   - Laci ini berisi chip/tombol kategori tag.
+   - LOGIKA TAG DINAMIS: Ambil daftar tag secara otomatis dari data dummy yang ada. Tambahkan tag "All". Jika tag di laci diklik, filter card list di bawahnya.
+   - Jika tombol filter ditutup namun ada tag yang aktif (misal 'AI'), tampilkan indikator "Filter • AI" di tombolnya.
+
+4. KARTU AIRDROP (CLEAN LAYOUT):
+   - Susunan rapi: Kiri atas ikon (di dalam kotak transparan), tengah atas Judul + Ikon External Link kecil menyatu di samping judul + URL kecil di bawahnya.
+   - Pojok kanan atas kartu: Ikon Bookmark & Share (berjajar rapi, tidak memakan ruang bawah).
+   - Deskripsi: Bebas panjang (tidak dipotong/truncate), teks warna abu-abu.
+   - Kapsul Tag: Maksimal 3 tag di bawah deskripsi. Gunakan gaya warna elegan (contoh: teks ungu muda, background ungu 8%, ring ungu 20%).
+
+5. FLOATING DOCK (BOTTOM NAV GAYA iOS/APPLE):
+   - Jangan gunakan bottom bar penuh dari ujung ke ujung.
+   - Buat Dock berbentuk kapsul (pill) melayang di tengah bawah layar. Beri efek backdrop-blur kuat dan bayangan (shadow-2xl).
+   - Ikon berurutan: Home, Layers, Plus (Action Button), Bookmark, User.
+   - Tombol "Plus" di tengah HARUS paling menonjol: bulat sempurna, background putih pekat, ikon hitam, sedikit lebih besar dari yang lain.
+
+6. DATA AWAL:
+   - Masukkan 5 data airdrop dummy untuk di-render lengkap dengan ikon emoji bawaan, judul, url, deskripsi, dan array tag (1-3 tag).
+
+Buatkan kode React utuh, responsif, dan langsung bisa berjalan (Mobile-First).
