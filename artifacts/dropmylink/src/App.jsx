@@ -7,9 +7,7 @@ import {
   Bookmark,
   Share2,
   Home,
-  Layers,
   Plus,
-  User,
   X,
   ChevronDown,
   Link2,
@@ -373,36 +371,35 @@ export default function App() {
       </div>
 
       <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 px-4">
-        <div className="flex items-center gap-1 px-3 py-2.5 rounded-full bg-white/[0.07] backdrop-blur-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60">
-          {[
-            { id: "home", icon: Home },
-            { id: "layers", icon: Layers },
-            { id: "plus", icon: Plus, special: true },
-            { id: "bookmarks", icon: Bookmark },
-            { id: "user", icon: User },
-          ].map(({ id, icon: Icon, special }) => (
-            <button
-              key={id}
-              onClick={() => {
-                if (special) {
-                  setShowAddModal(true);
-                } else {
-                  setActiveNav(id);
-                }
-              }}
-              className={`flex items-center justify-center transition-all duration-200 ${
-                special
-                  ? "w-11 h-11 rounded-full bg-white shadow-lg shadow-white/20 mx-1"
-                  : `w-10 h-10 rounded-full ${
-                      activeNav === id
-                        ? "bg-white/15 text-white"
-                        : "text-white/40 hover:text-white/70 hover:bg-white/8"
-                    }`
-              }`}
-            >
-              <Icon className={special ? "w-5 h-5 text-black" : "w-4.5 h-4.5"} />
-            </button>
-          ))}
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.07] backdrop-blur-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60">
+          <button
+            onClick={() => setActiveNav("home")}
+            className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 ${
+              activeNav === "home"
+                ? "bg-white/15 text-white"
+                : "text-white/40 hover:text-white/70 hover:bg-white/8"
+            }`}
+          >
+            <Home className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg shadow-white/20 mx-1 hover:bg-white/90 active:scale-95 transition-all duration-200"
+          >
+            <Plus className="w-5 h-5 text-black" />
+          </button>
+
+          <button
+            onClick={() => setActiveNav("bookmarks")}
+            className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 ${
+              activeNav === "bookmarks"
+                ? "bg-white/15 text-white"
+                : "text-white/40 hover:text-white/70 hover:bg-white/8"
+            }`}
+          >
+            <Bookmark className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
