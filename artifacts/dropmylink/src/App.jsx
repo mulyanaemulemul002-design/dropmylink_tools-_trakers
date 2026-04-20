@@ -1,7 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Sparkles,
-  Bell,
   Search,
   SlidersHorizontal,
   ExternalLink,
@@ -13,55 +12,10 @@ import {
   User,
   X,
   ChevronDown,
+  Link2,
 } from "lucide-react";
 
-const AIRDROPS = [
-  {
-    id: 1,
-    icon: "🤖",
-    title: "Nexus AI Protocol",
-    url: "nexusai.xyz",
-    description:
-      "Nexus AI is a decentralized machine learning infrastructure layer built on top of a modular blockchain. Stake $NXS to earn compute credits and participate in governance decisions shaping the future of on-chain AI computation.",
-    tags: ["AI", "DeFi", "Layer2"],
-  },
-  {
-    id: 2,
-    icon: "🌊",
-    title: "OceanSwap DEX",
-    url: "oceanswap.finance",
-    description:
-      "OceanSwap is a next-generation automated market maker combining concentrated liquidity with dynamic fee tiers. Connect your wallet, add liquidity to any pair, and earn $WAVE tokens as trading fee rewards every epoch.",
-    tags: ["DeFi", "DEX"],
-  },
-  {
-    id: 3,
-    icon: "🏛️",
-    title: "AgoraDAO",
-    url: "agoradao.io",
-    description:
-      "AgoraDAO reimagines on-chain governance through quadratic voting and soul-bound credentials. Join the waitlist, verify your identity via zero-knowledge proof, and earn founding member $AGORA tokens before the public TGE.",
-    tags: ["DAO", "Governance", "ZK"],
-  },
-  {
-    id: 4,
-    icon: "⚡",
-    title: "Voltchain Network",
-    url: "voltchain.network",
-    description:
-      "Voltchain is an EVM-compatible Layer-1 blockchain optimized for real-time microtransactions and IoT payment streams. Run a validator node or simply delegate $VOLT to earn staking rewards and early network incentives.",
-    tags: ["Layer1", "IoT"],
-  },
-  {
-    id: 5,
-    icon: "🎮",
-    title: "PixelRealm",
-    url: "pixelrealm.gg",
-    description:
-      "PixelRealm is a fully on-chain RPG where every item, land parcel, and character stat is stored on-chain. Complete seasonal quests to earn $PIXEL tokens redeemable for exclusive NFT gear drops and future in-game expansions.",
-    tags: ["GameFi", "NFT", "Play2Earn"],
-  },
-];
+const STORAGE_KEY = "dropmylink_airdrops";
 
 const TAG_COLORS = {
   AI: { text: "text-violet-300", bg: "bg-violet-500/8", ring: "ring-violet-500/20" },
@@ -75,10 +29,25 @@ const TAG_COLORS = {
   IoT: { text: "text-teal-300", bg: "bg-teal-500/8", ring: "ring-teal-500/20" },
   GameFi: { text: "text-pink-300", bg: "bg-pink-500/8", ring: "ring-pink-500/20" },
   NFT: { text: "text-indigo-300", bg: "bg-indigo-500/8", ring: "ring-indigo-500/20" },
-  Play2Earn: { text: "text-lime-300", bg: "bg-lime-500/8", ring: "ring-lime-500/20" },
+  "Play2Earn": { text: "text-lime-300", bg: "bg-lime-500/8", ring: "ring-lime-500/20" },
 };
 
 const DEFAULT_TAG_COLOR = { text: "text-violet-300", bg: "bg-violet-500/8", ring: "ring-violet-500/20" };
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveToStorage(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {}
+}
 
 function TagChip({ tag }) {
   const color = TAG_COLORS[tag] || DEFAULT_TAG_COLOR;
@@ -91,14 +60,14 @@ function TagChip({ tag }) {
   );
 }
 
-function AirdropCard({ item }) {
+function AirdropCard({ item, onDelete }) {
   const [bookmarked, setBookmarked] = useState(false);
 
   return (
     <div className="relative rounded-2xl bg-white/[0.02] ring-1 ring-white/10 p-4 transition-all duration-200 hover:bg-white/[0.04] hover:ring-white/15">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center text-2xl">
-          {item.icon}
+          {item.icon || "🔗"}
         </div>
 
         <div className="flex-1 min-w-0 pr-16">
@@ -119,49 +88,156 @@ function AirdropCard({ item }) {
             className={`w-3.5 h-3.5 transition-colors ${bookmarked ? "text-blue-400 fill-blue-400" : "text-white/40"}`}
           />
         </button>
-        <button className="w-7 h-7 rounded-lg bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center transition-colors hover:bg-white/[0.08]">
-          <Share2 className="w-3.5 h-3.5 text-white/40" />
+        <button
+          onClick={() => onDelete(item.id)}
+          className="w-7 h-7 rounded-lg bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center transition-colors hover:bg-red-500/20 hover:ring-red-500/30"
+        >
+          <X className="w-3.5 h-3.5 text-white/40 hover:text-red-400" />
         </button>
       </div>
 
-      <p className="text-[13px] text-white/50 leading-relaxed mt-3">{item.description}</p>
+      {item.description && (
+        <p className="text-[13px] text-white/50 leading-relaxed mt-3">{item.description}</p>
+      )}
 
-      <div className="flex flex-wrap gap-1.5 mt-3">
-        {item.tags.slice(0, 3).map((tag) => (
-          <TagChip key={tag} tag={tag} />
-        ))}
+      {item.tags && item.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {item.tags.slice(0, 3).map((tag) => (
+            <TagChip key={tag} tag={tag} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AddLinkModal({ onClose, onAdd }) {
+  const [form, setForm] = useState({ icon: "", title: "", url: "", description: "", tags: "" });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!form.title.trim() || !form.url.trim()) return;
+    const tags = form.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    onAdd({
+      id: Date.now(),
+      icon: form.icon.trim() || "🔗",
+      title: form.title.trim(),
+      url: form.url.trim().replace(/^https?:\/\//, ""),
+      description: form.description.trim(),
+      tags,
+    });
+    onClose();
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-3xl bg-[#0a0a0a] ring-1 ring-white/10 p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-base font-semibold text-white">Tambah Link Baru</h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-xl bg-white/[0.05] ring-1 ring-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+          >
+            <X className="w-4 h-4 text-white/60" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <div className="flex gap-2">
+            <input
+              placeholder="Emoji ikon (e.g. 🚀)"
+              value={form.icon}
+              onChange={(e) => setForm({ ...form, icon: e.target.value })}
+              className="w-24 bg-white/[0.04] ring-1 ring-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 transition-all text-center"
+            />
+            <input
+              required
+              placeholder="Judul airdrop *"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              className="flex-1 bg-white/[0.04] ring-1 ring-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 transition-all"
+            />
+          </div>
+
+          <input
+            required
+            placeholder="URL (e.g. project.xyz) *"
+            value={form.url}
+            onChange={(e) => setForm({ ...form, url: e.target.value })}
+            className="w-full bg-white/[0.04] ring-1 ring-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 transition-all font-mono"
+          />
+
+          <textarea
+            placeholder="Deskripsi (opsional)"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            rows={3}
+            className="w-full bg-white/[0.04] ring-1 ring-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 transition-all resize-none"
+          />
+
+          <input
+            placeholder="Tags, pisahkan koma (e.g. AI, DeFi, NFT)"
+            value={form.tags}
+            onChange={(e) => setForm({ ...form, tags: e.target.value })}
+            className="w-full bg-white/[0.04] ring-1 ring-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 transition-all"
+          />
+
+          <button
+            type="submit"
+            className="w-full mt-1 py-3 rounded-xl bg-white text-black text-sm font-semibold hover:bg-white/90 active:scale-[0.98] transition-all"
+          >
+            Simpan Link
+          </button>
+        </form>
       </div>
     </div>
   );
 }
 
 export default function App() {
+  const [airdrops, setAirdrops] = useState(() => loadFromStorage());
   const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTag, setActiveTag] = useState("All");
   const [activeNav, setActiveNav] = useState("home");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  useEffect(() => {
+    saveToStorage(airdrops);
+  }, [airdrops]);
+
+  function handleAdd(item) {
+    setAirdrops((prev) => [item, ...prev]);
+  }
+
+  function handleDelete(id) {
+    setAirdrops((prev) => prev.filter((a) => a.id !== id));
+  }
 
   const allTags = useMemo(() => {
     const tags = new Set();
-    AIRDROPS.forEach((a) => a.tags.forEach((t) => tags.add(t)));
+    airdrops.forEach((a) => (a.tags || []).forEach((t) => tags.add(t)));
     return ["All", ...Array.from(tags)];
-  }, []);
+  }, [airdrops]);
 
   const filtered = useMemo(() => {
-    return AIRDROPS.filter((item) => {
-      const matchTag = activeTag === "All" || item.tags.includes(activeTag);
+    return airdrops.filter((item) => {
+      const matchTag = activeTag === "All" || (item.tags || []).includes(activeTag);
       const q = search.toLowerCase();
       const matchSearch =
         !q ||
         item.title.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.tags.some((t) => t.toLowerCase().includes(q));
+        (item.description || "").toLowerCase().includes(q) ||
+        (item.tags || []).some((t) => t.toLowerCase().includes(q));
       return matchTag && matchSearch;
     });
-  }, [activeTag, search]);
+  }, [activeTag, search, airdrops]);
 
-  const filterLabel =
-    activeTag !== "All" ? `Filter • ${activeTag}` : "Filter";
+  const filterLabel = activeTag !== "All" ? `Filter • ${activeTag}` : "Filter";
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
@@ -172,7 +248,7 @@ export default function App() {
       </div>
 
       <div className="relative z-10 max-w-lg mx-auto px-4 pb-36 pt-6">
-        <header className="flex items-center justify-between mb-6">
+        <header className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-blue-400" />
@@ -183,10 +259,15 @@ export default function App() {
             </div>
           </div>
 
-          <button className="relative w-9 h-9 rounded-xl bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center transition-colors hover:bg-white/[0.08]">
-            <Bell className="w-4.5 h-4.5 text-white/70" />
-            <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-blue-500 ring-1 ring-black" />
-          </button>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] ring-1 ring-white/10">
+            <Link2 className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-xs font-semibold text-white/80">
+              {airdrops.length}
+            </span>
+            <span className="text-xs text-white/35">
+              {airdrops.length === 1 ? "link" : "links"} tersimpan
+            </span>
+          </div>
         </header>
 
         <div className="relative mb-4">
@@ -248,21 +329,44 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs text-white/30 font-medium">
-            {filtered.length} {filtered.length === 1 ? "result" : "results"}{" "}
-            {activeTag !== "All" && <span>for <span className="text-white/50">{activeTag}</span></span>}
-          </p>
-        </div>
+        {airdrops.length > 0 && (
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs text-white/30 font-medium">
+              {filtered.length} {filtered.length === 1 ? "result" : "results"}
+              {activeTag !== "All" && (
+                <span> for <span className="text-white/50">{activeTag}</span></span>
+              )}
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col gap-3">
-          {filtered.length > 0 ? (
-            filtered.map((item) => <AirdropCard key={item.id} item={item} />)
+          {airdrops.length === 0 ? (
+            <div className="text-center py-20 flex flex-col items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center">
+                <Link2 className="w-7 h-7 text-white/20" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white/40">Belum ada link tersimpan</p>
+                <p className="text-xs text-white/20 mt-1">Ketuk tombol + untuk menambah airdrop pertamamu</p>
+              </div>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.06] ring-1 ring-white/15 text-sm text-white/70 hover:bg-white/[0.10] hover:text-white transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                Tambah Link
+              </button>
+            </div>
+          ) : filtered.length > 0 ? (
+            filtered.map((item) => (
+              <AirdropCard key={item.id} item={item} onDelete={handleDelete} />
+            ))
           ) : (
             <div className="text-center py-16 text-white/25">
               <Search className="w-8 h-8 mx-auto mb-3 opacity-40" />
-              <p className="text-sm">No airdrops found</p>
-              <p className="text-xs mt-1 opacity-60">Try a different search or filter</p>
+              <p className="text-sm">Tidak ada hasil</p>
+              <p className="text-xs mt-1 opacity-60">Coba kata kunci atau filter lain</p>
             </div>
           )}
         </div>
@@ -271,15 +375,21 @@ export default function App() {
       <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 px-4">
         <div className="flex items-center gap-1 px-3 py-2.5 rounded-full bg-white/[0.07] backdrop-blur-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60">
           {[
-            { id: "home", icon: Home, label: "Home" },
-            { id: "layers", icon: Layers, label: "Explore" },
-            { id: "plus", icon: Plus, label: "Add", special: true },
-            { id: "bookmarks", icon: Bookmark, label: "Saved" },
-            { id: "user", icon: User, label: "Profile" },
+            { id: "home", icon: Home },
+            { id: "layers", icon: Layers },
+            { id: "plus", icon: Plus, special: true },
+            { id: "bookmarks", icon: Bookmark },
+            { id: "user", icon: User },
           ].map(({ id, icon: Icon, special }) => (
             <button
               key={id}
-              onClick={() => setActiveNav(id)}
+              onClick={() => {
+                if (special) {
+                  setShowAddModal(true);
+                } else {
+                  setActiveNav(id);
+                }
+              }}
               className={`flex items-center justify-center transition-all duration-200 ${
                 special
                   ? "w-11 h-11 rounded-full bg-white shadow-lg shadow-white/20 mx-1"
@@ -290,13 +400,15 @@ export default function App() {
                     }`
               }`}
             >
-              <Icon
-                className={special ? "w-5 h-5 text-black" : "w-4.5 h-4.5"}
-              />
+              <Icon className={special ? "w-5 h-5 text-black" : "w-4.5 h-4.5"} />
             </button>
           ))}
         </div>
       </div>
+
+      {showAddModal && (
+        <AddLinkModal onClose={() => setShowAddModal(false)} onAdd={handleAdd} />
+      )}
     </div>
   );
 }
