@@ -58,7 +58,7 @@ function TagChip({ tag }) {
   );
 }
 
-function AirdropCard({ item, onDelete }) {
+function AirdropCard({ item, onDelete, onAskAI }) {
   const [bookmarked, setBookmarked] = useState(false);
 
   return (
@@ -78,6 +78,13 @@ function AirdropCard({ item, onDelete }) {
       </div>
 
       <div className="absolute top-4 right-4 flex items-center gap-1.5">
+        <button
+          onClick={() => onAskAI(item.title, item.url)}
+          className="w-7 h-7 rounded-lg bg-violet-500/10 ring-1 ring-violet-500/25 flex items-center justify-center transition-colors hover:bg-violet-500/20"
+          title="Ask AI"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+        </button>
         <button
           onClick={() => setBookmarked(!bookmarked)}
           className="w-7 h-7 rounded-lg bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center transition-colors hover:bg-white/[0.08]"
@@ -203,6 +210,7 @@ export default function App() {
   const [activeTag, setActiveTag] = useState("All");
   const [activeNav, setActiveNav] = useState("home");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     saveToStorage(airdrops);
@@ -214,6 +222,16 @@ export default function App() {
 
   function handleDelete(id) {
     setAirdrops((prev) => prev.filter((a) => a.id !== id));
+  }
+
+  function handleAskGemini(name, url) {
+    const text = `Cari info airdrop terbaru untuk project: ${name} di ${url}`;
+    navigator.clipboard.writeText(text).catch(() => {});
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      window.open("https://gemini.google.com/app", "_blank");
+    }, 1000);
   }
 
   const allTags = useMemo(() => {
@@ -358,7 +376,7 @@ export default function App() {
             </div>
           ) : filtered.length > 0 ? (
             filtered.map((item) => (
-              <AirdropCard key={item.id} item={item} onDelete={handleDelete} />
+              <AirdropCard key={item.id} item={item} onDelete={handleDelete} onAskAI={handleAskGemini} />
             ))
           ) : (
             <div className="text-center py-16 text-white/25">
@@ -406,6 +424,15 @@ export default function App() {
       {showAddModal && (
         <AddLinkModal onClose={() => setShowAddModal(false)} onAdd={handleAdd} />
       )}
+
+      <div
+        className={`fixed bottom-28 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[#18182a] ring-1 ring-violet-500/30 shadow-2xl shadow-violet-900/30 transition-all duration-300 ${
+          showToast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
+        }`}
+      >
+        <Sparkles className="w-4 h-4 text-violet-400 flex-shrink-0" />
+        <p className="text-xs text-white/80 whitespace-nowrap">Prompt disalin! Membuka Gemini…</p>
+      </div>
     </div>
   );
 }
