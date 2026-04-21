@@ -16,21 +16,21 @@ import {
 const STORAGE_KEY = "dropmylink_airdrops";
 
 const TAG_COLORS = {
-  AI: { text: "text-violet-300", bg: "bg-violet-500/8", ring: "ring-violet-500/20" },
-  DeFi: { text: "text-sky-300", bg: "bg-sky-500/8", ring: "ring-sky-500/20" },
-  Layer2: { text: "text-emerald-300", bg: "bg-emerald-500/8", ring: "ring-emerald-500/20" },
-  DEX: { text: "text-amber-300", bg: "bg-amber-500/8", ring: "ring-amber-500/20" },
-  DAO: { text: "text-rose-300", bg: "bg-rose-500/8", ring: "ring-rose-500/20" },
-  Governance: { text: "text-orange-300", bg: "bg-orange-500/8", ring: "ring-orange-500/20" },
-  ZK: { text: "text-fuchsia-300", bg: "bg-fuchsia-500/8", ring: "ring-fuchsia-500/20" },
-  Layer1: { text: "text-cyan-300", bg: "bg-cyan-500/8", ring: "ring-cyan-500/20" },
-  IoT: { text: "text-teal-300", bg: "bg-teal-500/8", ring: "ring-teal-500/20" },
-  GameFi: { text: "text-pink-300", bg: "bg-pink-500/8", ring: "ring-pink-500/20" },
-  NFT: { text: "text-indigo-300", bg: "bg-indigo-500/8", ring: "ring-indigo-500/20" },
-  "Play2Earn": { text: "text-lime-300", bg: "bg-lime-500/8", ring: "ring-lime-500/20" },
+  AI: { text: "text-violet-300", bg: "bg-violet-500/20", ring: "ring-violet-500/30" },
+  DeFi: { text: "text-sky-300", bg: "bg-sky-500/20", ring: "ring-sky-500/30" },
+  Layer2: { text: "text-emerald-300", bg: "bg-emerald-500/20", ring: "ring-emerald-500/30" },
+  DEX: { text: "text-amber-300", bg: "bg-amber-500/20", ring: "ring-amber-500/30" },
+  DAO: { text: "text-rose-300", bg: "bg-rose-500/20", ring: "ring-rose-500/30" },
+  Governance: { text: "text-orange-300", bg: "bg-orange-500/20", ring: "ring-orange-500/30" },
+  ZK: { text: "text-fuchsia-300", bg: "bg-fuchsia-500/20", ring: "ring-fuchsia-500/30" },
+  Layer1: { text: "text-cyan-300", bg: "bg-cyan-500/20", ring: "ring-cyan-500/30" },
+  IoT: { text: "text-teal-300", bg: "bg-teal-500/20", ring: "ring-teal-500/30" },
+  GameFi: { text: "text-pink-300", bg: "bg-pink-500/20", ring: "ring-pink-500/30" },
+  NFT: { text: "text-indigo-300", bg: "bg-indigo-500/20", ring: "ring-indigo-500/30" },
+  "Play2Earn": { text: "text-lime-300", bg: "bg-lime-500/20", ring: "ring-lime-500/30" },
 };
 
-const DEFAULT_TAG_COLOR = { text: "text-violet-300", bg: "bg-violet-500/8", ring: "ring-violet-500/20" };
+const DEFAULT_TAG_COLOR = { text: "text-violet-300", bg: "bg-violet-500/20", ring: "ring-violet-500/30" };
 
 function loadFromStorage() {
   try {
@@ -62,9 +62,9 @@ function AirdropCard({ item, onDelete, onAskAI }) {
   const [bookmarked, setBookmarked] = useState(false);
 
   return (
-    <div className="relative rounded-2xl bg-white/[0.02] ring-1 ring-white/10 p-4 transition-all duration-200 hover:bg-white/[0.04] hover:ring-white/15">
+    <div className="relative rounded-2xl bg-white/[0.06] ring-1 ring-white/15 p-4 transition-all duration-200 hover:bg-white/10 hover:ring-white/25">
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center text-2xl">
+        <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center text-2xl">
           {item.icon || "🔗"}
         </div>
 
@@ -258,42 +258,40 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-        <div className="absolute top-1/2 -right-40 w-[400px] h-[400px] rounded-full bg-violet-600/8 blur-[120px]" />
-        <div className="absolute -bottom-20 left-1/4 w-[350px] h-[350px] rounded-full bg-indigo-600/6 blur-[120px]" />
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-blue-600/20 blur-[120px]" />
+        <div className="absolute top-1/2 -right-40 w-[400px] h-[400px] rounded-full bg-violet-600/15 blur-[120px]" />
+        <div className="absolute -bottom-20 left-1/4 w-[350px] h-[350px] rounded-full bg-indigo-600/10 blur-[120px]" />
       </div>
 
-      <div className="relative z-10 max-w-lg mx-auto px-4 pb-36 pt-6">
-        <header className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-blue-400" />
+      <div className="relative z-10 max-w-lg mx-auto px-5 pb-36 pt-6">
+        <header className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center">
+              <Sparkles className="w-4.5 h-4.5 text-blue-400" />
             </div>
             <div className="flex items-baseline gap-0.5">
               <span className="text-base font-bold tracking-tight text-white">DROP</span>
-              <span className="text-base font-bold tracking-tight text-white/40">MYLINK</span>
+              <span className="text-base font-bold tracking-tight text-white/50">MYLINK</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] ring-1 ring-white/10">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 ring-1 ring-white/20">
             <Link2 className="w-3.5 h-3.5 text-blue-400" />
-            <span className="text-xs font-semibold text-white/80">
-              {airdrops.length}
-            </span>
-            <span className="text-xs text-white/35">
+            <span className="text-xs font-bold text-white">{airdrops.length}</span>
+            <span className="text-xs text-white/50">
               {airdrops.length === 1 ? "link" : "links"} tersimpan
             </span>
           </div>
         </header>
 
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
           <input
             type="search"
             placeholder="Search airdrops..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/[0.04] ring-1 ring-white/10 rounded-2xl pl-10 pr-4 py-3 text-sm text-white placeholder-white/25 outline-none focus:ring-white/20 focus:bg-white/[0.06] transition-all"
+            className="w-full bg-white/10 ring-1 ring-white/20 rounded-2xl pl-10 pr-4 py-3 text-sm text-white placeholder-white/30 outline-none focus:ring-white/40 focus:bg-white/15 transition-all"
           />
         </div>
 
@@ -302,8 +300,8 @@ export default function App() {
             onClick={() => setFilterOpen(!filterOpen)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ring-1 ${
               activeTag !== "All"
-                ? "bg-blue-500/15 ring-blue-500/40 text-blue-300"
-                : "bg-white/[0.04] ring-white/10 text-white/60 hover:bg-white/[0.07] hover:text-white/80"
+                ? "bg-blue-500/25 ring-blue-400/50 text-blue-300"
+                : "bg-white/10 ring-white/20 text-white/70 hover:bg-white/15 hover:text-white"
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -318,7 +316,7 @@ export default function App() {
               filterOpen ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0"
             }`}
           >
-            <div className="bg-white/[0.02] ring-1 ring-white/8 rounded-2xl p-3 flex flex-wrap gap-2">
+            <div className="bg-white/[0.06] ring-1 ring-white/15 rounded-2xl p-3 flex flex-wrap gap-2">
               {allTags.map((tag) => (
                 <button
                   key={tag}
