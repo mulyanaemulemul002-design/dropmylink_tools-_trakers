@@ -8,8 +8,8 @@ import {
 
 // ─── ADMIN CONFIG ─────────────────────────────────────────────
 // Ganti email dan PIN ini sebelum deploy!
-const ADMIN_EMAIL = "admin@dropmylink.xyz";
-const ADMIN_PIN   = "2025";
+const ADMIN_EMAIL = "mulyanaemulemul002@gmail.com";
+const ADMIN_PIN   = "050208";
 
 // ─── STORAGE ──────────────────────────────────────────────────
 const K = {
